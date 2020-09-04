@@ -2,28 +2,31 @@
 
 // options : 请求参数对象 
 $.ajaxPrefilter(function (options) {
-    // 在发起真正的 Ajax 请求之前，统一拼接请求的根路径
-    options.url = 'http://ajax.frontend.itheima.net' + options.url
+  // 在发起真正的 Ajax 请求之前，统一拼接请求的根路径
+  options.url = 'http://ajax.frontend.itheima.net' + options.url
 
-    // 统一为有权限的接口,设置headers请求头  indexOf是否包含某个元素 不包含返回-1 
-    if (options.url.indexOf('/my/') !== -1) {
-        options.headers = {
-            Authorization: localStorage.getItem('token') || ''
-        }
+  // 统一为有权限的接口,设置headers请求头  indexOf是否包含某个元素 不包含返回-1 
+  if (options.url.indexOf('/my/') !== -1) {
+    options.headers = {
+      Authorization: localStorage.getItem('token') || ''
     }
+  }
 
-    // 当请求结束后,判断用户的设置访问权限
-    options.complete = function (res) {
-        console.log(res);
-        // 当用户认证失败后
-        if (res.responseJSON.status === 1 && res.responseJSON.message === '身份认证失败！') {
-            // 1. 强制清空本地的 token
-            localStorage.removeItem('token')
-            // 2. 强制跳转到登录页面
-            location.href = '/login.html'
-        }
+  // 当请求结束后,判断用户的设置访问权限 complete不管成不成功都执行
+  options.complete = function (res) {
+    console.log(res);
+    // 当用户认证失败后
+    if (res.responseJSON.status === 1 && res.responseJSON.message === '身份认证失败！') {
+      // 1. 强制清空本地的 token
+      localStorage.removeItem('token')
+      // 2. 强制跳转到登录页面
+      location.href = '/login.html'
     }
+  }
 })
+
+
+
 
 
 
